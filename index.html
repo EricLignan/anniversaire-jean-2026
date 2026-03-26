@@ -468,7 +468,37 @@ const ICONS = ["🎁", "🎀", "🎊", "🎉", "🎈", "🎂", "🎵", "💌", "
 let openedCount = 0;
 let currentAudio = null;
 const bgMusic = document.getElementById("bg-music");
-bgMusic.volume = 0.15;
+const BG_VOLUME = 0.15;
+bgMusic.volume = BG_VOLUME;
+
+function fadeOutMusic(duration = 800) {
+    const steps = 20;
+    const interval = duration / steps;
+    const decrement = bgMusic.volume / steps;
+    const fade = setInterval(() => {
+        bgMusic.volume = Math.max(0, bgMusic.volume - decrement);
+        if (bgMusic.volume <= 0.001) {
+            clearInterval(fade);
+            bgMusic.pause();
+            bgMusic.volume = 0;
+        }
+    }, interval);
+}
+
+function fadeInMusic(duration = 800) {
+    bgMusic.volume = 0;
+    bgMusic.play().catch(() => {});
+    const steps = 20;
+    const interval = duration / steps;
+    const increment = BG_VOLUME / steps;
+    const fade = setInterval(() => {
+        bgMusic.volume = Math.min(BG_VOLUME, bgMusic.volume + increment);
+        if (bgMusic.volume >= BG_VOLUME - 0.001) {
+            clearInterval(fade);
+            bgMusic.volume = BG_VOLUME;
+        }
+    }, interval);
+}
 
 // === DEMARRAGE ===
 function startExperience() {
@@ -583,8 +613,8 @@ function showModal(gift) {
     }
 
     modal.classList.add("active");
-    // Pause la musique de fond pendant l'ecoute
-    bgMusic.pause();
+    // Fondu sortant de la musique de fond
+    fadeOutMusic(800);
 }
 
 function closeModal(event) {
@@ -595,8 +625,8 @@ function closeModal(event) {
         currentAudio.pause();
         currentAudio = null;
     }
-    // Reprendre la musique de fond
-    bgMusic.play().catch(() => {});
+    // Fondu entrant de la musique de fond
+    fadeInMusic(800);
 }
 
 // Fermer avec Echap
