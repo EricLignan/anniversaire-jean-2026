@@ -119,8 +119,6 @@
         /* === CADEAU (boite) === */
         .gift-box {
             aspect-ratio: 1;
-            background: white;
-            border: 2px solid var(--pink-light);
             border-radius: 16px;
             display: flex;
             flex-direction: column;
@@ -130,13 +128,21 @@
             transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 2px solid transparent;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
         }
+
+        .gift-box:nth-child(6n+1) { background: var(--pink-light); }
+        .gift-box:nth-child(6n+2) { background: var(--green-light); }
+        .gift-box:nth-child(6n+3) { background: var(--peach); }
+        .gift-box:nth-child(6n+4) { background: #D4E8FF; }
+        .gift-box:nth-child(6n+5) { background: #F5E6FF; }
+        .gift-box:nth-child(6n+6) { background: #FFF3CD; }
 
         .gift-box:hover {
             transform: translateY(-4px);
             border-color: var(--pink);
-            box-shadow: 0 8px 25px rgba(232, 160, 191, 0.25);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
         }
 
         .gift-box.opened {
@@ -165,7 +171,7 @@
 
         .gift-name {
             font-size: 0.85rem;
-            color: var(--text-light);
+            color: var(--text);
             font-weight: 600;
             text-align: center;
             padding: 0 0.5rem;
@@ -319,11 +325,12 @@
         }
 
         #finale p {
-            font-size: 1.1rem;
-            line-height: 1.8;
+            font-size: 1.4rem;
+            font-weight: 600;
+            line-height: 2;
             max-width: 500px;
             margin: 0 auto;
-            opacity: 0.9;
+            color: var(--green);
         }
 
         #wishes-container {
@@ -359,8 +366,8 @@
         }
 
         .heart {
-            font-size: 3rem;
-            margin-top: 1.5rem;
+            font-size: 5rem;
+            margin-top: 2rem;
             animation: pulse 1.5s ease-in-out infinite;
         }
 
@@ -426,6 +433,11 @@
     </div>
 </div>
 
+<!-- Musique de fond -->
+<audio id="bg-music" loop preload="auto">
+    <source src="assets/background-jazz.mp3" type="audio/mpeg">
+</audio>
+
 <!-- canvas-confetti CDN -->
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
@@ -448,12 +460,16 @@ const GIFTS = [
 const ICONS = ["🎁", "🎀", "🎊", "🎉", "🎈", "🎂", "🎵", "💌", "🌟", "✨", "💛"];
 let openedCount = 0;
 let currentAudio = null;
+const bgMusic = document.getElementById("bg-music");
+bgMusic.volume = 0.15;
 
 // === DEMARRAGE ===
 function startExperience() {
     document.getElementById("welcome").style.display = "none";
     document.getElementById("gifts-section").style.display = "block";
     renderGrid();
+    // Demarrer la musique de fond (apres interaction utilisateur = autorise par les navigateurs)
+    bgMusic.play().catch(() => {});
     // Petit confetti d'accueil
     confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
 }
@@ -560,6 +576,8 @@ function showModal(gift) {
     }
 
     modal.classList.add("active");
+    // Pause la musique de fond pendant l'ecoute
+    bgMusic.pause();
 }
 
 function closeModal(event) {
@@ -570,6 +588,8 @@ function closeModal(event) {
         currentAudio.pause();
         currentAudio = null;
     }
+    // Reprendre la musique de fond
+    bgMusic.play().catch(() => {});
 }
 
 // Fermer avec Echap
