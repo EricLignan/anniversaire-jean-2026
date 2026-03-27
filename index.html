@@ -393,23 +393,6 @@
             50% { transform: scale(1.15); }
         }
 
-        /* === BALLONS === */
-        .balloon {
-            position: fixed;
-            bottom: -80px;
-            font-size: 3rem;
-            z-index: 50;
-            pointer-events: none;
-            animation: balloonRise linear forwards;
-        }
-
-        @keyframes balloonRise {
-            0% { transform: translateY(0) rotate(0deg); opacity: 0.9; }
-            20% { opacity: 1; }
-            80% { opacity: 0.8; }
-            100% { transform: translateY(-110vh) rotate(15deg); opacity: 0; }
-        }
-
         /* Motif decoratif */
         .pattern-border {
             height: 6px;
@@ -476,6 +459,11 @@
 
 <!-- canvas-confetti CDN -->
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<!-- balloons-js CDN -->
+<script type="module" id="balloons-module">
+    import { balloons } from 'https://cdn.jsdelivr.net/npm/balloons-js@0.0.3/+esm';
+    window.launchBalloons = balloons;
+</script>
 
 <script>
 // === CONFIGURATION DES CADEAUX ===
@@ -742,8 +730,8 @@ function showFinale() {
     // Musique de fond pour la finale
     fadeInMusic(800);
 
-    // Ballons qui montent
-    launchBalloons();
+    // Ballons SVG 3D (balloons-js)
+    if (window.launchBalloons) window.launchBalloons();
 
     // Feu d'artifice continu (8 secondes)
     const duration = 8000;
@@ -784,23 +772,7 @@ function showFinale() {
     });
 }
 
-function launchBalloons() {
-    const balloons = ["🎈", "🟡", "🎈", "🩷", "🎈", "🟢", "🎈", "🔵", "🎈", "🟣"];
-    const colors = ["🎈"];
-    let count = 0;
-    const interval = setInterval(() => {
-        if (count >= 20) { clearInterval(interval); return; }
-        const el = document.createElement("div");
-        el.className = "balloon";
-        el.textContent = balloons[count % balloons.length];
-        el.style.left = (5 + Math.random() * 90) + "%";
-        el.style.animationDuration = (4 + Math.random() * 3) + "s";
-        el.style.fontSize = (2 + Math.random() * 2) + "rem";
-        document.body.appendChild(el);
-        el.addEventListener("animationend", () => el.remove());
-        count++;
-    }, 400);
-}
+// launchBalloons() est defini par le module balloons-js (window.launchBalloons)
 </script>
 
 </body>
