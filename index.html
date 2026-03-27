@@ -488,6 +488,7 @@ let GIFTS = [...GIFTS_FALLBACK];
 const ICONS = ["🎁", "🎀", "🎊", "🎉", "🎈", "🎂", "🎵", "💌", "🌟", "✨", "💛", "🎶", "🌺", "🎤", "💜", "🌸", "💝", "🌻"];
 let openedCount = 0;
 let currentAudio = null;
+let allOpened = false;
 const bgMusic = document.getElementById("bg-music");
 const BG_VOLUME = 0.15;
 bgMusic.volume = BG_VOLUME;
@@ -590,9 +591,9 @@ function openGift(gift, box) {
         colors: ["#E8A0BF", "#A8D5BA", "#F5D56E", "#FDEBD3"]
     });
 
-    // Finale ?
+    // Marquer que tous les cadeaux sont ouverts (finale au closeModal)
     if (openedCount === GIFTS.length) {
-        setTimeout(showFinale, 1500);
+        allOpened = true;
     }
 }
 
@@ -661,6 +662,11 @@ function closeModal(event) {
     }
     // Fondu entrant de la musique de fond
     fadeInMusic(800);
+    // Finale apres fermeture du dernier cadeau
+    if (allOpened) {
+        allOpened = false;
+        setTimeout(showFinale, 500);
+    }
 }
 
 // Fermer avec Echap
